@@ -13,7 +13,7 @@ class ObatController extends Controller
     public function debug(Request $request)
     {
         try {
-            $kd_bangsal = $request->input('kd_bangsal', 'AP');
+            $kd_bangsal = $request->input('kd_bangsal', 'APK');
 
             // Check gudangbarang
             $gudangCount = DB::table('gudangbarang')
@@ -59,7 +59,7 @@ class ObatController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('q', '');
-        $kd_bangsal = $request->input('kd_bangsal', 'AP'); // Default farmasi (Apotek)
+        $kd_bangsal = $request->input('kd_bangsal', 'APK'); // Default farmasi (Apotek)
         $markup = $request->input('markup', 0); // Markup percentage for harga
         $stok_kosong = $request->input('stok_kosong', 'no'); // yes or no - show zero stock items
 
