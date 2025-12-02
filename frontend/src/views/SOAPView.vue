@@ -4537,6 +4537,15 @@ const pilihObatNonRacikan = (obat) => {
   }
   showModalInputObat.value = true
   showObatDropdown.value = false
+
+  // Auto focus dan select input jumlah setelah modal muncul
+  nextTick(() => {
+    const inputJumlah = document.querySelector('.modal-input-obat-simple input[type="number"]')
+    if (inputJumlah) {
+      inputJumlah.focus()
+      inputJumlah.select()
+    }
+  })
 }
 
 const confirmTambahObat = () => {
