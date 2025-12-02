@@ -112,9 +112,18 @@ const router = useRouter()
 const loading = ref(false)
 const patients = ref([])
 
+// Helper function untuk mendapatkan tanggal hari ini
+const getTodayDate = () => {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const filter = ref({
-  tanggal_dari: new Date().toISOString().split('T')[0],
-  tanggal_sampai: new Date().toISOString().split('T')[0],
+  tanggal_dari: getTodayDate(),
+  tanggal_sampai: getTodayDate(),
   search: ''
 })
 

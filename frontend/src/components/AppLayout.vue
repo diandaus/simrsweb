@@ -14,7 +14,7 @@
           </div>
           <transition name="fade">
             <div v-if="!sidebarCollapsed" class="logo-text">
-              <div class="hospital-name">SIMRS Khanza</div>
+              <div class="hospital-name">SIMRS</div>
               <small class="hospital-id">ID: {{ user?.nip || 'Admin' }}</small>
             </div>
           </transition>
