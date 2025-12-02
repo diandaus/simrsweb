@@ -51,6 +51,19 @@ if ! command -v php &> /dev/null; then
     exit 1
 fi
 
+# Check PHP version
+PHP_VERSION=$(php -r 'echo PHP_VERSION;')
+PHP_MAJOR=$(php -r 'echo PHP_MAJOR_VERSION;')
+PHP_MINOR=$(php -r 'echo PHP_MINOR_VERSION;')
+
+if [ "$PHP_MAJOR" -lt 8 ] || ([ "$PHP_MAJOR" -eq 8 ] && [ "$PHP_MINOR" -lt 2 ]); then
+    echo -e "${RED}PHP version $PHP_VERSION is installed, but PHP 8.2+ is required.${NC}"
+    echo -e "${YELLOW}Please upgrade PHP first. See UPGRADE_PHP_UBUNTU.md for instructions.${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}PHP version: $PHP_VERSION${NC}"
+
 # Check Composer
 if ! command -v composer &> /dev/null; then
     echo -e "${YELLOW}Composer not found. Installing...${NC}"
