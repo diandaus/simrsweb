@@ -12,6 +12,14 @@ class HybridWebHelper
      */
     public static function getFileUrl($path)
     {
+        // Gunakan base_url jika sudah di-set di env
+        $baseUrl = config('hybridweb.base_url');
+        
+        if ($baseUrl) {
+            return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
+        }
+
+        // Generate dari host, port, dan path jika base_url tidak di-set
         $host = config('hybridweb.host');
         $port = config('hybridweb.port');
         $basePath = config('hybridweb.path');

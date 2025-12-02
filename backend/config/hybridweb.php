@@ -18,31 +18,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Base URL Generator
+    | Base URL
     |--------------------------------------------------------------------------
     |
-    | Generate base URL untuk mengakses berkas digital
+    | Base URL untuk mengakses berkas digital
+    | Bisa di-override dengan env HYBRIDWEB_BASE_URL
     |
     */
 
-    'base_url' => function() {
-        $host = config('hybridweb.host');
-        $port = config('hybridweb.port');
-        $path = config('hybridweb.path');
-
-        $url = 'http://' . $host;
-
-        // Tambahkan port jika bukan port default (80)
-        if ($port && $port != '80') {
-            $url .= ':' . $port;
-        }
-
-        // Tambahkan path
-        if ($path) {
-            $url .= '/' . trim($path, '/');
-        }
-
-        return $url;
-    },
+    'base_url' => env('HYBRIDWEB_BASE_URL', null),
 
 ];
