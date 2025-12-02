@@ -17,7 +17,7 @@ class SOAPController extends Controller
             'subjective' => 'required',
             'objective' => 'required',
             'assessment' => 'required',
-            'planning' => 'required'
+            'planning' => 'nullable'
         ]);
 
         try {
@@ -125,7 +125,7 @@ class SOAPController extends Controller
             'subjective' => 'required',
             'objective' => 'required',
             'assessment' => 'required',
-            'planning' => 'required'
+            'planning' => 'nullable'
         ]);
 
         try {
