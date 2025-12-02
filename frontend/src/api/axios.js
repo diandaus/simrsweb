@@ -1,7 +1,12 @@
 import axios from 'axios'
 
+// Base URL untuk API
+// Development: http://127.0.0.1:8000/api
+// Production: /api (relative path, akan menggunakan domain/IP yang sama)
+const baseURL = import.meta.env.VITE_API_URL || '/api'
+
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
