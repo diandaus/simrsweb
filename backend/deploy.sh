@@ -21,11 +21,27 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Variables
-APP_DIR="/var/www/simrs-web"
-BACKEND_DIR="$APP_DIR/backend"
+# Get script directory and determine app root
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BACKEND_DIR="$SCRIPT_DIR"
+APP_DIR="$(dirname "$BACKEND_DIR")"
 FRONTEND_DIR="$APP_DIR/frontend"
 WEB_USER="www-data"
+
+# Verify directories exist
+if [ ! -d "$BACKEND_DIR" ]; then
+    echo -e "${RED}Backend directory not found: $BACKEND_DIR${NC}"
+    exit 1
+fi
+
+if [ ! -d "$FRONTEND_DIR" ]; then
+    echo -e "${RED}Frontend directory not found: $FRONTEND_DIR${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}App Directory: $APP_DIR${NC}"
+echo -e "${GREEN}Backend Directory: $BACKEND_DIR${NC}"
+echo -e "${GREEN}Frontend Directory: $FRONTEND_DIR${NC}"
 
 echo -e "${GREEN}Step 1: Checking prerequisites...${NC}"
 
