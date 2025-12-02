@@ -117,7 +117,7 @@
             :class="{ active: activeInputTab === 'soap' }"
             @click="activeInputTab = 'soap'"
           >
-            📋 SOAP
+            📋 SOAP/CPPT
           </button>
           <button
             class="soap-tab"
@@ -256,7 +256,6 @@
                 v-model="form.planning"
                 class="form-control soap-textarea"
                 placeholder="Rencana tindakan atau terapi..."
-                required
               ></textarea>
             </div>
 
@@ -2033,6 +2032,7 @@
                             v-model="obat.jml"
                             min="1"
                             :max="obat.stok"
+                            @focus="$event.target.select()"
                           >
                         </td>
                         <td>{{ obat.kode_sat }}</td>
@@ -2103,6 +2103,7 @@
                     v-model="racikan.jml_dr"
                     placeholder="Jumlah"
                     min="1"
+                    @focus="$event.target.select()"
                   >
                 </div>
                 <div class="col-md-4">
@@ -2251,6 +2252,7 @@
                 :max="selectedObatNonRacikan.stok"
                 required
                 autofocus
+                @focus="$event.target.select()"
                 @keyup.enter="confirmTambahObat">
             </div>
             <div class="col">
