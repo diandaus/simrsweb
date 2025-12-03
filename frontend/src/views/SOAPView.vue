@@ -180,9 +180,14 @@
               <textarea
                 v-model="form.subjective"
                 class="form-control soap-textarea"
-                placeholder="Keluhan yang disampaikan pasien..."
+                placeholder="Keluhan yang disampaikan pasien... (ketik untuk melihat history)"
                 required
+                list="subjective-history"
+                @input="handleInputChange('subjective')"
               ></textarea>
+              <datalist id="subjective-history">
+                <option v-for="(item, index) in historySuggestions.subjective" :key="index" :value="item"></option>
+              </datalist>
             </div>
 
             <!-- Objective -->
@@ -194,37 +199,119 @@
               <textarea
                 v-model="form.objective"
                 class="form-control soap-textarea"
-                placeholder="Hasil pemeriksaan fisik..."
+                placeholder="Hasil pemeriksaan fisik... (ketik untuk melihat history)"
                 required
+                list="objective-history"
+                @input="handleInputChange('objective')"
               ></textarea>
+              <datalist id="objective-history">
+                <option v-for="(item, index) in historySuggestions.objective" :key="index" :value="item"></option>
+              </datalist>
             </div>
 
             <!-- Vital Signs -->
             <div class="vital-signs-section">
+              <div class="vital-signs-header">
+                <label class="vital-signs-title">Vital Signs</label>
+                <div class="vital-signs-actions">
+                  <button 
+                    type="button" 
+                    @click="copyLastVitalSigns" 
+                    class="btn-vital-action"
+                    title="Copy dari kunjungan terakhir"
+                    :disabled="vitalSignsLoading">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span v-if="!vitalSignsLoading">Last Visit</span>
+                    <span v-else class="spinner-border spinner-border-sm"></span>
+                  </button>
+                  <button 
+                    type="button" 
+                    @click="setNormalVitalSigns" 
+                    class="btn-vital-action"
+                    title="Isi dengan nilai normal">
+                    <i class="bi bi-heart-pulse"></i> Normal
+                  </button>
+                  <button 
+                    type="button" 
+                    @click="clearVitalSigns" 
+                    class="btn-vital-action btn-vital-clear"
+                    title="Kosongkan semua">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+              </div>
               <div class="vital-signs-grid">
                 <div class="vital-item">
                   <label>TD</label>
-                  <input v-model="form.tensi" type="text" class="form-control" placeholder="">
+                  <input 
+                    v-model="form.tensi" 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="120/80"
+                    list="tensi-history">
+                  <datalist id="tensi-history">
+                    <option v-for="(item, index) in vitalSignsHistory.tensi" :key="index" :value="item"></option>
+                  </datalist>
                 </div>
                 <div class="vital-item">
-                  <label>Suhu</label>
-                  <input v-model="form.suhu" type="text" class="form-control" placeholder="">
+                  <label>Suhu (°C)</label>
+                  <input 
+                    v-model="form.suhu" 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="36.5"
+                    list="suhu-history">
+                  <datalist id="suhu-history">
+                    <option v-for="(item, index) in vitalSignsHistory.suhu" :key="index" :value="item"></option>
+                  </datalist>
                 </div>
                 <div class="vital-item">
-                  <label>Nadi</label>
-                  <input v-model="form.nadi" type="text" class="form-control" placeholder="">
+                  <label>Nadi (x/mnt)</label>
+                  <input 
+                    v-model="form.nadi" 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="80"
+                    list="nadi-history">
+                  <datalist id="nadi-history">
+                    <option v-for="(item, index) in vitalSignsHistory.nadi" :key="index" :value="item"></option>
+                  </datalist>
                 </div>
                 <div class="vital-item">
-                  <label>RR</label>
-                  <input v-model="form.respirasi" type="text" class="form-control" placeholder="">
+                  <label>RR (x/mnt)</label>
+                  <input 
+                    v-model="form.respirasi" 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="20"
+                    list="respirasi-history">
+                  <datalist id="respirasi-history">
+                    <option v-for="(item, index) in vitalSignsHistory.respirasi" :key="index" :value="item"></option>
+                  </datalist>
                 </div>
                 <div class="vital-item">
-                  <label>TB</label>
-                  <input v-model="form.tinggi" type="text" class="form-control" placeholder="">
+                  <label>TB (cm)</label>
+                  <input 
+                    v-model="form.tinggi" 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="170"
+                    list="tinggi-history">
+                  <datalist id="tinggi-history">
+                    <option v-for="(item, index) in vitalSignsHistory.tinggi" :key="index" :value="item"></option>
+                  </datalist>
                 </div>
                 <div class="vital-item">
-                  <label>BB</label>
-                  <input v-model="form.berat" type="text" class="form-control" placeholder="">
+                  <label>BB (kg)</label>
+                  <input 
+                    v-model="form.berat" 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="60"
+                    list="berat-history">
+                  <datalist id="berat-history">
+                    <option v-for="(item, index) in vitalSignsHistory.berat" :key="index" :value="item"></option>
+                  </datalist>
                 </div>
               </div>
             </div>
@@ -241,9 +328,14 @@
               <textarea
                 v-model="form.assessment"
                 class="form-control soap-textarea"
-                placeholder="Diagnosis atau assessment..."
+                placeholder="Diagnosis atau assessment... (ketik untuk melihat history)"
                 required
+                list="assessment-history"
+                @input="handleInputChange('assessment')"
               ></textarea>
+              <datalist id="assessment-history">
+                <option v-for="(item, index) in historySuggestions.assessment" :key="index" :value="item"></option>
+              </datalist>
             </div>
 
             <!-- Planning -->
@@ -255,8 +347,13 @@
               <textarea
                 v-model="form.planning"
                 class="form-control soap-textarea"
-                placeholder="Rencana tindakan atau terapi..."
+                placeholder="Rencana tindakan atau terapi... (ketik untuk melihat history)"
+                list="planning-history"
+                @input="handleInputChange('planning')"
               ></textarea>
+              <datalist id="planning-history">
+                <option v-for="(item, index) in historySuggestions.planning" :key="index" :value="item"></option>
+              </datalist>
             </div>
 
             <!-- Evaluasi -->
@@ -268,8 +365,13 @@
               <textarea
                 v-model="form.evaluasi"
                 class="form-control soap-textarea"
-                placeholder="Evaluasi dan catatan lanjutan..."
+                placeholder="Evaluasi dan catatan lanjutan... (ketik untuk melihat history)"
+                list="evaluasi-history"
+                @input="handleInputChange('evaluasi')"
               ></textarea>
+              <datalist id="evaluasi-history">
+                <option v-for="(item, index) in historySuggestions.evaluasi" :key="index" :value="item"></option>
+              </datalist>
             </div>
 
             <!-- Instruksi -->
@@ -281,8 +383,13 @@
               <textarea
                 v-model="form.instruksi"
                 class="form-control soap-textarea"
-                placeholder="Instruksi tambahan..."
+                placeholder="Instruksi tambahan... (ketik untuk melihat history)"
+                list="instruksi-history"
+                @input="handleInputChange('instruksi')"
               ></textarea>
+              <datalist id="instruksi-history">
+                <option v-for="(item, index) in historySuggestions.instruksi" :key="index" :value="item"></option>
+              </datalist>
             </div>
           </div>
 
@@ -2747,6 +2854,159 @@ const form = ref({
 // Edit mode state
 const isEditMode = ref(false)
 const editingSOAP = ref(null) // Store tgl_perawatan and jam_rawat for update
+
+// History/Autocomplete suggestions
+const historySuggestions = ref({
+  subjective: [],
+  objective: [],
+  assessment: [],
+  planning: [],
+  evaluasi: [],
+  instruksi: []
+})
+
+// Vital Signs History
+const vitalSignsHistory = ref({
+  tensi: [],
+  suhu: [],
+  nadi: [],
+  respirasi: [],
+  tinggi: [],
+  berat: []
+})
+
+// Fetch history suggestions from database
+const fetchHistorySuggestions = async (field, query = '') => {
+  try {
+    const { data } = await apiClient.get('/soap/suggestions', {
+      params: {
+        field: field,
+        query: query
+      }
+    })
+    if (data.success) {
+      historySuggestions.value[field] = data.data
+    }
+  } catch (error) {
+    console.error(`Error fetching ${field} history:`, error)
+  }
+}
+
+// Fetch vital signs history from database
+const fetchVitalSignsHistory = async (field) => {
+  try {
+    const { data } = await apiClient.get('/soap/vital-signs-history', {
+      params: {
+        field: field
+      }
+    })
+    if (data.success) {
+      vitalSignsHistory.value[field] = data.data
+    }
+  } catch (error) {
+    console.error(`Error fetching ${field} vital signs history:`, error)
+  }
+}
+
+// Load all vital signs history on component mount
+const loadAllVitalSignsHistory = async () => {
+  const fields = ['tensi', 'suhu', 'nadi', 'respirasi', 'tinggi', 'berat']
+  for (const field of fields) {
+    await fetchVitalSignsHistory(field)
+  }
+}
+
+// Handle input change with debounce for performance
+let debounceTimers = {}
+const handleInputChange = (field) => {
+  clearTimeout(debounceTimers[field])
+  debounceTimers[field] = setTimeout(() => {
+    const query = form.value[field]
+    if (query && query.length >= 1) {
+      fetchHistorySuggestions(field, query)
+    }
+  }, 300) // Wait 300ms after user stops typing
+}
+
+// Vital Signs Management
+const vitalSignsLoading = ref(false)
+
+// Copy vital signs from last visit of the same patient
+const copyLastVitalSigns = async () => {
+  try {
+    vitalSignsLoading.value = true
+    
+    // Get last SOAP record for this patient (exclude current visit)
+    const { data } = await apiClient.get(`/soap/history/${patient.value.no_rawat}`)
+    
+    if (data.success && data.data && data.data.length > 0) {
+      // Get the most recent record
+      const lastRecord = data.data[0]
+      
+      // Copy vital signs if available
+      if (lastRecord.tensi) form.value.tensi = lastRecord.tensi
+      if (lastRecord.suhu_tubuh) form.value.suhu = lastRecord.suhu_tubuh
+      if (lastRecord.nadi) form.value.nadi = lastRecord.nadi
+      if (lastRecord.respirasi) form.value.respirasi = lastRecord.respirasi
+      if (lastRecord.tinggi) form.value.tinggi = lastRecord.tinggi
+      if (lastRecord.berat) form.value.berat = lastRecord.berat
+      
+      showSweetAlert({
+        type: 'success',
+        title: 'Berhasil!',
+        message: 'Vital signs dari kunjungan terakhir berhasil di-copy',
+        confirmText: 'OK',
+        cancelText: ''
+      })
+    } else {
+      showSweetAlert({
+        type: 'info',
+        title: 'Info',
+        message: 'Tidak ada data vital signs dari kunjungan sebelumnya',
+        confirmText: 'OK',
+        cancelText: ''
+      })
+    }
+  } catch (error) {
+    console.error('Copy last vital signs error:', error)
+    showSweetAlert({
+      type: 'error',
+      title: 'Error!',
+      message: 'Gagal mengambil data vital signs terakhir',
+      confirmText: 'OK',
+      cancelText: ''
+    })
+  } finally {
+    vitalSignsLoading.value = false
+  }
+}
+
+// Set normal/default vital signs values
+const setNormalVitalSigns = () => {
+  form.value.tensi = '120/80'
+  form.value.suhu = '36.5'
+  form.value.nadi = '80'
+  form.value.respirasi = '20'
+  // TB & BB tidak diisi karena spesifik per pasien
+  
+  showSweetAlert({
+    type: 'success',
+    title: 'Berhasil!',
+    message: 'Vital signs diisi dengan nilai normal',
+    confirmText: 'OK',
+    cancelText: ''
+  })
+}
+
+// Clear all vital signs
+const clearVitalSigns = () => {
+  form.value.tensi = ''
+  form.value.suhu = ''
+  form.value.nadi = ''
+  form.value.respirasi = ''
+  form.value.tinggi = ''
+  form.value.berat = ''
+}
 
 // SOAP History
 const soapHistory = ref([])
@@ -5279,6 +5539,9 @@ onMounted(() => {
   }
   // Load SOAP history
   loadSOAPHistory()
+  
+  // Load vital signs history for autocomplete
+  loadAllVitalSignsHistory()
 })
 
 // Watch for tab changes to load riwayat resep automatically
@@ -6150,6 +6413,69 @@ watch(activeUsgEkgTab, (newSubTab) => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+.vital-signs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.vital-signs-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2d3748;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.vital-signs-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-vital-action {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-vital-action:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+.btn-vital-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-vital-action i {
+  font-size: 0.85rem;
+}
+
+.btn-vital-clear {
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+}
+
+.btn-vital-clear:hover:not(:disabled) {
+  background: linear-gradient(135deg, #475569 0%, #334155 100%);
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3);
+}
+
 .vital-signs-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -6184,6 +6510,27 @@ watch(activeUsgEkgTab, (newSubTab) => {
   outline: none;
   border-color: #06b6d4;
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+/* Responsive vital signs buttons */
+@media (max-width: 768px) {
+  .vital-signs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .vital-signs-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .btn-vital-action {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.7rem;
+    padding: 0.35rem 0.5rem;
+  }
 }
 
 /* Action Buttons Bar */
@@ -7015,7 +7362,7 @@ watch(activeUsgEkgTab, (newSubTab) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 99999; /* Harus lebih tinggi dari semua modal (10000) */
   animation: fadeIn 0.3s ease;
 }
 

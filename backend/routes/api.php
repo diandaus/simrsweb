@@ -54,6 +54,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/soap/update', [SOAPController::class, 'update']);
     Route::get('/soap/history/{no_rawat}', [SOAPController::class, 'history'])->where('no_rawat', '.*');
     Route::get('/soap/riwayat-soapie/{no_rkm_medis}', [SOAPController::class, 'riwayatSOAPIE']);
+    Route::get('/soap/suggestions', [SOAPController::class, 'getHistory']); // Autocomplete history
+    Route::get('/soap/vital-signs-history', [SOAPController::class, 'getVitalSignsHistory']); // Vital signs history
     Route::delete('/soap/{no_rawat}/{tgl_perawatan}/{jam_rawat}', [SOAPController::class, 'destroy'])->where(['no_rawat' => '.*', 'jam_rawat' => '.*']);
 
     // Obat Routes

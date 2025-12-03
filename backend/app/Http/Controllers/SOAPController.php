@@ -276,4 +276,103 @@ class SOAPController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get history/suggestions for SOAP fields
+     * Returns unique values from previous SOAP entries
+     */
+    public function getHistory(Request $request)
+    {
+        $request->validate([
+            'field' => 'required|in:subjective,objective,assessment,planning,evaluasi,instruksi',
+            'query' => 'nullable|string'
+        ]);
+
+        try {
+            $field = $request->field;
+            $query = $request->query ?? '';
+            
+            // Map field names to database columns
+            $columnMap = [
+                'subjective' => 'keluhan',
+                'objective' => 'pemeriksaan',
+                'assessment' => 'penilaian',
+                'planning' => 'rtl',
+                'evaluasi' => 'evaluasi',
+                'instruksi' => 'instruksi'
+            ];
+            
+            $column = $columnMap[$field];
+            
+            // Get unique, non-empty values from last 1000 records
+            $history = DB::table('pemeriksaan_ralan')
+                ->select($column)
+                ->where($column, '!=', '')
+                ->whereNotNull($column)
+                ->where($column, 'like', $query . '%')
+                ->groupBy($column)
+                ->orderByRaw('COUNT(*) DESC') // Most frequently used first
+                ->limit(20)
+                ->pluck($column);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $history
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil history: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get history/suggestions for Vital Signs
+     * Returns unique values from previous vital signs entries
+     */
+    public function getVitalSignsHistory(Request $request)
+    {
+        $request->validate([
+            'field' => 'required|in:tensi,suhu,nadi,respirasi,tinggi,berat',
+        ]);
+
+        try {
+            $field = $request->field;
+            
+            // Map field names to database columns
+            $columnMap = [
+                'tensi' => 'tensi',
+                'suhu' => 'suhu_tubuh',
+                'nadi' => 'nadi',
+                'respirasi' => 'respirasi',
+                'tinggi' => 'tinggi',
+                'berat' => 'berat'
+            ];
+            
+            $column = $columnMap[$field];
+            
+            // Get unique, non-empty values, most frequently used first
+            $history = DB::table('pemeriksaan_ralan')
+                ->select($column)
+                ->where($column, '!=', '')
+                ->where($column, '!=', '0')
+                ->where($column, '!=', '-')
+                ->whereNotNull($column)
+                ->groupBy($column)
+                ->orderByRaw('COUNT(*) DESC') // Most frequently used first
+                ->limit(15)
+                ->pluck($column);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $history
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil history vital signs: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
