@@ -120,20 +120,13 @@ class ResepController extends Controller
             // 2. Insert non racikan ke resep_dokter
             if (!empty($request->non_racikan)) {
                 foreach ($request->non_racikan as $obat) {
-                    // Get kapasitas obat
-                    $kapasitas = DB::table('databarang')
-                        ->where('kode_brng', $obat['kode_brng'])
-                        ->value('kapasitas');
-
-                    $kapasitas = $kapasitas ?: 1; // Default 1 if null
-
-                    // Jumlah = jml yang diinput / kapasitas
-                    $jml = $obat['jml'] / $kapasitas;
-
+                    // Langsung simpan jumlah yang diinput, tanpa pembagian kapasitas
+                    // Karena dokter meresepkan dalam satuan utama (1 botol, 1 tablet, dll)
+                    // BUKAN dalam satuan terkecil (ml, mg, dll)
                     DB::table('resep_dokter')->insert([
                         'no_resep' => $no_resep,
                         'kode_brng' => $obat['kode_brng'],
-                        'jml' => $jml,
+                        'jml' => $obat['jml'],  // Simpan langsung jumlah input
                         'aturan_pakai' => $obat['aturan_pakai']
                     ]);
                 }
