@@ -180,7 +180,7 @@
               <textarea
                 v-model="form.subjective"
                 class="form-control soap-textarea"
-                placeholder="Keluhan yang disampaikan pasien... (ketik untuk melihat history)"
+                placeholder="Keluhan yang disampaikan pasien..."
                 required
                 list="subjective-history"
                 @input="handleInputChange('subjective')"
@@ -199,7 +199,7 @@
               <textarea
                 v-model="form.objective"
                 class="form-control soap-textarea"
-                placeholder="Hasil pemeriksaan fisik... (ketik untuk melihat history)"
+                placeholder="Hasil pemeriksaan fisik..."
                 required
                 list="objective-history"
                 @input="handleInputChange('objective')"
@@ -211,43 +211,13 @@
 
             <!-- Vital Signs -->
             <div class="vital-signs-section">
-              <div class="vital-signs-header">
-                <label class="vital-signs-title">Vital Signs</label>
-                <div class="vital-signs-actions">
-                  <button 
-                    type="button" 
-                    @click="copyLastVitalSigns" 
-                    class="btn-vital-action"
-                    title="Copy dari kunjungan terakhir"
-                    :disabled="vitalSignsLoading">
-                    <i class="bi bi-arrow-clockwise"></i>
-                    <span v-if="!vitalSignsLoading">Last Visit</span>
-                    <span v-else class="spinner-border spinner-border-sm"></span>
-                  </button>
-                  <button 
-                    type="button" 
-                    @click="setNormalVitalSigns" 
-                    class="btn-vital-action"
-                    title="Isi dengan nilai normal">
-                    <i class="bi bi-heart-pulse"></i> Normal
-                  </button>
-                  <button 
-                    type="button" 
-                    @click="clearVitalSigns" 
-                    class="btn-vital-action btn-vital-clear"
-                    title="Kosongkan semua">
-                    <i class="bi bi-x-circle"></i>
-                  </button>
-                </div>
-              </div>
               <div class="vital-signs-grid">
                 <div class="vital-item">
                   <label>TD</label>
                   <input 
                     v-model="form.tensi" 
                     type="text" 
-                    class="form-control" 
-                    placeholder="120/80"
+                    class="form-control"
                     list="tensi-history">
                   <datalist id="tensi-history">
                     <option v-for="(item, index) in vitalSignsHistory.tensi" :key="index" :value="item"></option>
@@ -258,8 +228,7 @@
                   <input 
                     v-model="form.suhu" 
                     type="text" 
-                    class="form-control" 
-                    placeholder="36.5"
+                    class="form-control"
                     list="suhu-history">
                   <datalist id="suhu-history">
                     <option v-for="(item, index) in vitalSignsHistory.suhu" :key="index" :value="item"></option>
@@ -270,8 +239,7 @@
                   <input 
                     v-model="form.nadi" 
                     type="text" 
-                    class="form-control" 
-                    placeholder="80"
+                    class="form-control"
                     list="nadi-history">
                   <datalist id="nadi-history">
                     <option v-for="(item, index) in vitalSignsHistory.nadi" :key="index" :value="item"></option>
@@ -282,8 +250,7 @@
                   <input 
                     v-model="form.respirasi" 
                     type="text" 
-                    class="form-control" 
-                    placeholder="20"
+                    class="form-control"
                     list="respirasi-history">
                   <datalist id="respirasi-history">
                     <option v-for="(item, index) in vitalSignsHistory.respirasi" :key="index" :value="item"></option>
@@ -294,8 +261,7 @@
                   <input 
                     v-model="form.tinggi" 
                     type="text" 
-                    class="form-control" 
-                    placeholder="170"
+                    class="form-control"
                     list="tinggi-history">
                   <datalist id="tinggi-history">
                     <option v-for="(item, index) in vitalSignsHistory.tinggi" :key="index" :value="item"></option>
@@ -306,8 +272,7 @@
                   <input 
                     v-model="form.berat" 
                     type="text" 
-                    class="form-control" 
-                    placeholder="60"
+                    class="form-control"
                     list="berat-history">
                   <datalist id="berat-history">
                     <option v-for="(item, index) in vitalSignsHistory.berat" :key="index" :value="item"></option>
@@ -328,7 +293,7 @@
               <textarea
                 v-model="form.assessment"
                 class="form-control soap-textarea"
-                placeholder="Diagnosis atau assessment... (ketik untuk melihat history)"
+                placeholder="Diagnosis atau assessment..."
                 required
                 list="assessment-history"
                 @input="handleInputChange('assessment')"
@@ -347,7 +312,7 @@
               <textarea
                 v-model="form.planning"
                 class="form-control soap-textarea"
-                placeholder="Rencana tindakan atau terapi... (ketik untuk melihat history)"
+                placeholder="Rencana tindakan atau terapi..."
                 list="planning-history"
                 @input="handleInputChange('planning')"
               ></textarea>
@@ -365,7 +330,7 @@
               <textarea
                 v-model="form.evaluasi"
                 class="form-control soap-textarea"
-                placeholder="Evaluasi dan catatan lanjutan... (ketik untuk melihat history)"
+                placeholder="Evaluasi dan catatan lanjutan..."
                 list="evaluasi-history"
                 @input="handleInputChange('evaluasi')"
               ></textarea>
@@ -383,7 +348,7 @@
               <textarea
                 v-model="form.instruksi"
                 class="form-control soap-textarea"
-                placeholder="Instruksi tambahan... (ketik untuk melihat history)"
+                placeholder="Instruksi tambahan..."
                 list="instruksi-history"
                 @input="handleInputChange('instruksi')"
               ></textarea>
