@@ -5300,6 +5300,9 @@ const submitResepUnified = async () => {
       // Close modal first
       closeModalResep()
 
+      // Reload SOAP history to show auto-updated Planning
+      loadSOAPHistory()
+
       // Then show success alert (after modal closes, so z-index is correct)
       setTimeout(() => {
         showSweetAlert({

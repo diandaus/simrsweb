@@ -177,6 +177,10 @@ class ResepController extends Controller
 
             DB::commit();
 
+            // Auto-update Planning (rtl) di pemeriksaan_ralan dengan list obat yang diresepkan
+            // Hanya update jika Planning kosong atau hanya berisi whitespace
+            $this->autoUpdatePlanning($request->no_rawat, $request->non_racikan, $request->racikan);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Resep berhasil disimpan',
@@ -228,6 +232,75 @@ class ResepController extends Controller
             ->first();
 
         return $regPeriksa ? $regPeriksa->status_lanjut : 'ralan';
+    }
+
+    /**
+     * Auto-update Planning (rtl) di pemeriksaan_ralan dengan list obat dari resep
+     * Seperti SIMRS Khanza Java
+     */
+    private function autoUpdatePlanning($no_rawat, $nonRacikan, $racikan)
+    {
+        try {
+            // Generate planning text from resep
+            $planningText = '';
+            
+            // 1. Non-Racikan obat
+            if (!empty($nonRacikan)) {
+                foreach ($nonRacikan as $index => $obat) {
+                    $num = $index + 1;
+                    $namaObat = DB::table('databarang')
+                        ->where('kode_brng', $obat['kode_brng'])
+                        ->value('nama_brng');
+                    
+                    $planningText .= "{$num}. {$namaObat} {$obat['jml']} {$obat['aturan_pakai']}\n";
+                }
+            }
+            
+            // 2. Racikan obat
+            if (!empty($racikan)) {
+                foreach ($racikan as $r) {
+                    $planningText .= "Racik: {$r['nama_racikan']} {$r['jml_dr']}x {$r['aturan_pakai']}\n";
+                    
+                    if (!empty($r['detail'])) {
+                        foreach ($r['detail'] as $detail) {
+                            $namaObat = DB::table('databarang')
+                                ->where('kode_brng', $detail['kode_brng'])
+                                ->value('nama_brng');
+                            
+                            $planningText .= "  - {$namaObat} {$detail['kandungan']}\n";
+                        }
+                    }
+                }
+            }
+            
+            // Update pemeriksaan_ralan
+            // Hanya update record hari ini yang Planning-nya kosong atau whitespace only
+            $today = date('Y-m-d');
+            
+            DB::table('pemeriksaan_ralan')
+                ->where('no_rawat', $no_rawat)
+                ->where('tgl_perawatan', $today)
+                ->where(function($query) {
+                    $query->where('rtl', '')
+                          ->orWhereNull('rtl')
+                          ->orWhereRaw('TRIM(rtl) = ""');
+                })
+                ->update([
+                    'rtl' => trim($planningText)
+                ]);
+            
+            \Log::info('Auto-update Planning berhasil', [
+                'no_rawat' => $no_rawat,
+                'planning_text' => $planningText
+            ]);
+            
+        } catch (\Exception $e) {
+            // Log error tapi jangan throw exception, biar resep tetap tersimpan
+            \Log::error('Auto-update Planning error', [
+                'message' => $e->getMessage(),
+                'no_rawat' => $no_rawat
+            ]);
+        }
     }
 
     /**
